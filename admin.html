@@ -369,10 +369,12 @@
       publish_at: publishAt,
     };
 
-    // Se viene riprogrammato nel futuro (o creato per il futuro), resetta il flag di notifica
-    // così il controllo automatico manderà l'email quando arriverà davvero il momento
+    // Se viene riprogrammato nel futuro (o creato per il futuro), resetta i flag
+    // così il controllo automatico manderà l'email e rigenererà il sito
+    // quando arriverà davvero il momento
     if (isFuture) {
       payload.notified = false;
+      payload.site_built = false;
     }
 
     let error;
