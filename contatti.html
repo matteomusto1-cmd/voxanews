@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contatti — VoxaNews</title>
+<meta name="description" content="Come contattare il gestore di VoxaNews.">
+<meta property="og:title" content="Contatti — VoxaNews">
+<meta property="og:description" content="Come contattare il gestore di VoxaNews.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoxaNews">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+  <article class="max-w-3xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+
+    <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">Il giornale</p>
+    <h1 class="font-serif text-4xl font-bold text-ink mb-10">Contatti</h1>
+
+    <div class="prose-legal text-lg text-ink/80 leading-relaxed space-y-6 text-justify" style="hyphens: auto;">
+      <p>Per qualsiasi comunicazione — segnalazioni, correzioni, domande sul progetto o semplicemente per dire la tua — puoi scrivere direttamente al gestore del sito:</p>
+
+      <p class="font-serif text-2xl font-bold text-ink">voxa.news2026@gmail.com</p>
+
+      <p class="text-sm text-ink/50">VoxaNews è un progetto a titolare unico, gestito da Matteo Musto, con sede in Udine.</p>
+    </div>
+  </article>
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script>initLayout(null);</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; color: #111827; }
+.font-serif { font-family: 'Playfair Display', serif; }
+
+/* Smooth, discreet hover for images */
+.img-zoom { overflow: hidden; }
+.img-zoom img {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-zoom:hover img {
+  transform: scale(1.04);
+}
+
+.title-hover {
+  transition: color 0.3s ease;
+}
+.card-group:hover .title-hover {
+  color: #7A2E2E;
+}
+
+/* Sticky header shadow on scroll */
+#site-header {
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+#site-header.scrolled {
+  box-shadow: 0 1px 0 rgba(17,24,39,0.06);
+  background-color: rgba(249,250,251,0.97);
+}
+
+/* Mobile menu transition */
+#mobile-menu {
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+}
+
+.nav-link.active {
+  color: #7A2E2E;
+}
+
+.prose-article {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-zoom img, .title-hover, #site-header, #mobile-menu { transition: none !important; }
+}
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid #7A2E2E;
+  outline-offset: 2px;
+}

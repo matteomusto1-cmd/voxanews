@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il mio account — VoxaNews</title>
+<meta name="robots" content="noindex, nofollow">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+  <section class="max-w-xl mx-auto px-6 py-12 lg:py-16">
+
+    <div id="not-logged-in" class="hidden text-center py-16">
+      <h1 class="font-serif text-2xl font-bold text-ink mb-4">Accesso richiesto</h1>
+      <p class="text-sm text-ink/60 mb-6">Devi accedere per gestire le impostazioni del tuo account.</p>
+      <a href="login.html" class="inline-block bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">Accedi</a>
+    </div>
+
+    <div id="account-content" class="hidden">
+      <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">Account</p>
+      <h1 class="font-serif text-3xl font-bold text-ink mb-10">Le tue impostazioni</h1>
+
+      <form id="profile-form" class="flex flex-col gap-5 mb-12" novalidate>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="profile-first-name" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Nome</label>
+            <input id="profile-first-name" type="text" required
+                   class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          </div>
+          <div>
+            <label for="profile-last-name" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Cognome</label>
+            <input id="profile-last-name" type="text" required
+                   class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          </div>
+        </div>
+
+        <div>
+          <label for="profile-email" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Email</label>
+          <input id="profile-email" type="email" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          <p class="text-xs text-ink/40 mt-1">Se la cambi, dovrai confermare il nuovo indirizzo cliccando sul link che ti manderemo via email.</p>
+        </div>
+
+        <label class="flex items-center gap-3 text-sm text-ink/70">
+          <input id="profile-notify" type="checkbox" class="rounded-sm">
+          Ricevi una email quando pubblichiamo un nuovo articolo
+        </label>
+
+        <p id="profile-error" class="text-sm text-accent hidden"></p>
+        <p id="profile-success" class="text-sm text-accent hidden"></p>
+
+        <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300 self-start">
+          Salva modifiche
+        </button>
+      </form>
+
+      <div class="pt-10 border-t border-hairline">
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Zona pericolosa</h2>
+        <p class="text-sm text-ink/60 mb-4">Eliminando il tuo account, tutti i tuoi dati e i tuoi commenti verranno rimossi in modo permanente. L'operazione non è reversibile.</p>
+        <button id="delete-account-btn" class="text-sm font-semibold text-accent border border-accent/40 px-6 py-3 rounded-sm hover:bg-accent hover:text-white transition-colors duration-300">
+          Elimina il mio account
+        </button>
+        <p id="delete-error" class="text-sm text-accent hidden mt-3"></p>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script>
+  initLayout(null);
+
+  async function loadAccountPage() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      document.getElementById('not-logged-in').classList.remove('hidden');
+      return;
+    }
+
+    document.getElementById('account-content').classList.remove('hidden');
+    const user = session.user;
+    document.getElementById('profile-first-name').value = user.user_metadata?.first_name || '';
+    document.getElementById('profile-last-name').value = user.user_metadata?.last_name || '';
+    document.getElementById('profile-email').value = user.email || '';
+    document.getElementById('profile-notify').checked = user.user_metadata?.notify_articles !== false;
+  }
+
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const firstName = document.getElementById('profile-first-name').value.trim();
+    const lastName = document.getElementById('profile-last-name').value.trim();
+    const email = document.getElementById('profile-email').value.trim();
+    const notifyArticles = document.getElementById('profile-notify').checked;
+    const errorEl = document.getElementById('profile-error');
+    const successEl = document.getElementById('profile-success');
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    const { data: { session } } = await sb.auth.getSession();
+    const emailChanged = email !== session.user.email;
+
+    const { error } = await sb.auth.updateUser({
+      email: emailChanged ? email : undefined,
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+        full_name: `${firstName} ${lastName}`.trim(),
+        notify_articles: notifyArticles,
+      },
+    });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    successEl.textContent = emailChanged
+      ? 'Dati salvati. Controlla la tua nuova casella email per confermare il cambio indirizzo.'
+      : 'Dati salvati correttamente.';
+    successEl.classList.remove('hidden');
+  });
+
+  document.getElementById('delete-account-btn').addEventListener('click', async () => {
+    if (!confirm('Sei sicuro di voler eliminare definitivamente il tuo account? Questa azione non può essere annullata.')) return;
+
+    const errorEl = document.getElementById('delete-error');
+    errorEl.classList.add('hidden');
+
+    const { data: { session } } = await sb.auth.getSession();
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/delete-account`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_ANON_KEY,
+        },
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        errorEl.textContent = result.error || 'Non è stato possibile eliminare l\'account. Riprova.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    } catch (err) {
+      errorEl.textContent = 'Errore di connessione. Riprova.';
+      errorEl.classList.remove('hidden');
+    }
+  });
+
+  loadAccountPage();
+</script>
+
+</body>
+</html>

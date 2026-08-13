@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accedi o registrati — VoxaNews</title>
+<meta name="description" content="Accedi al tuo account VoxaNews o registrati per ricevere una notifica quando esce un nuovo articolo.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Accedi o registrati — VoxaNews">
+<meta property="og:description" content="Accedi al tuo account VoxaNews o registrati per ricevere una notifica quando esce un nuovo articolo.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoxaNews">
+<meta property="og:image" content="https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Accedi o registrati — VoxaNews">
+<meta name="twitter:description" content="Accedi al tuo account VoxaNews o registrati per ricevere una notifica quando esce un nuovo articolo.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+  <section class="max-w-md mx-auto px-6 py-16 lg:py-20">
+
+    <!-- Interruttore Accedi / Registrati -->
+    <div class="flex border-b border-hairline mb-10">
+      <button id="tab-login" class="flex-1 pb-4 text-sm font-semibold uppercase tracking-widest text-ink border-b-2 border-ink">Accedi</button>
+      <button id="tab-register" class="flex-1 pb-4 text-sm font-semibold uppercase tracking-widest text-ink/40 border-b-2 border-transparent">Registrati</button>
+    </div>
+
+    <!-- ============ LOGIN ============ -->
+    <div id="panel-login">
+      <p class="text-sm text-ink/60 text-center mb-8">Entra con il tuo account VoxaNews.</p>
+      <form id="login-form" class="flex flex-col gap-5" novalidate>
+        <div>
+          <label for="login-email" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Email</label>
+          <input id="login-email" type="email" autocomplete="username" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+        </div>
+        <div>
+          <label for="login-password" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Password</label>
+          <input id="login-password" type="password" autocomplete="current-password" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+        </div>
+        <p id="login-error" class="text-sm text-accent hidden"></p>
+        <p id="login-success" class="text-sm text-accent hidden"></p>
+        <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+          Accedi
+        </button>
+      </form>
+
+      <button type="button" id="forgot-password-toggle" class="block w-full text-center text-sm text-ink/60 hover:text-accent transition-colors duration-300 mt-5">
+        Password dimenticata?
+      </button>
+
+      <div id="forgot-password-panel" class="hidden mt-5 pt-5 border-t border-hairline">
+        <p class="text-sm text-ink/60 mb-4">Inserisci la tua email: ti manderemo un link per reimpostare la password.</p>
+        <form id="forgot-password-form" class="flex flex-col gap-3" novalidate>
+          <input id="forgot-email" type="email" required placeholder="La tua email"
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+            Invia link di reset
+          </button>
+          <p id="forgot-status" class="text-sm text-accent hidden"></p>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============ REGISTRAZIONE ============ -->
+    <div id="panel-register" class="hidden">
+      <p class="text-sm text-ink/60 text-center mb-8">Crea un account per ricevere una notifica via email quando pubblichiamo un nuovo articolo.</p>
+      <form id="register-form" class="flex flex-col gap-5" novalidate>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="register-first-name" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Nome</label>
+            <input id="register-first-name" type="text" autocomplete="given-name" required
+                   class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          </div>
+          <div>
+            <label for="register-last-name" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Cognome</label>
+            <input id="register-last-name" type="text" autocomplete="family-name" required
+                   class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="register-birthdate" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Data di nascita</label>
+            <input id="register-birthdate" type="date" required
+                   class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          </div>
+          <div>
+            <label for="register-gender" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Sesso</label>
+            <select id="register-gender" required
+                    class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+              <option value="" disabled selected>Seleziona</option>
+              <option value="M">Maschio</option>
+              <option value="F">Femmina</option>
+              <option value="Altro">Altro</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="register-email" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Email</label>
+          <input id="register-email" type="email" autocomplete="username" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+        </div>
+        <div>
+          <label for="register-password" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Password</label>
+          <input id="register-password" type="password" autocomplete="new-password" required minlength="6"
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+          <p class="text-xs text-ink/40 mt-1">Almeno 6 caratteri.</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <input id="register-terms" type="checkbox" required
+                 class="mt-1 rounded-sm border-hairline shrink-0">
+          <label for="register-terms" class="text-xs text-ink/60 leading-relaxed">
+            Ho letto e accetto i <a href="termini.html" target="_blank" class="text-accent hover:text-ink underline transition-colors duration-300">Termini di Servizio</a>,
+            la <a href="privacy.html" target="_blank" class="text-accent hover:text-ink underline transition-colors duration-300">Privacy Policy</a>
+            e la <a href="cookie.html" target="_blank" class="text-accent hover:text-ink underline transition-colors duration-300">Cookie Policy</a> di VoxaNews.
+          </label>
+        </div>
+        <p id="register-error" class="text-sm text-accent hidden"></p>
+        <div id="register-success" class="hidden bg-accent/5 border border-accent/30 rounded-sm p-4 flex gap-3 items-start">
+          <span class="text-accent text-lg leading-none mt-0.5">✓</span>
+          <p class="text-sm text-ink/80 leading-relaxed"></p>
+        </div>
+        <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+          Crea account
+        </button>
+      </form>
+    </div>
+
+  </section>
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script>
+  initLayout(null);
+
+  // ---------- interruttore tra i due pannelli ----------
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const panelLogin = document.getElementById('panel-login');
+  const panelRegister = document.getElementById('panel-register');
+
+  function showTab(which) {
+    const isLogin = which === 'login';
+    panelLogin.classList.toggle('hidden', !isLogin);
+    panelRegister.classList.toggle('hidden', isLogin);
+    tabLogin.classList.toggle('text-ink', isLogin);
+    tabLogin.classList.toggle('border-ink', isLogin);
+    tabLogin.classList.toggle('text-ink/40', !isLogin);
+    tabLogin.classList.toggle('border-transparent', !isLogin);
+    tabRegister.classList.toggle('text-ink', !isLogin);
+    tabRegister.classList.toggle('border-ink', !isLogin);
+    tabRegister.classList.toggle('text-ink/40', isLogin);
+    tabRegister.classList.toggle('border-transparent', isLogin);
+  }
+
+  tabLogin.addEventListener('click', () => showTab('login'));
+  tabRegister.addEventListener('click', () => showTab('register'));
+
+  // ---------- login ----------
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('login-error');
+    const successEl = document.getElementById('login-success');
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errorEl.textContent = error.message === 'Invalid login credentials'
+        ? 'Email o password non corretti, oppure devi ancora confermare l\'email che ti abbiamo mandato.'
+        : error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    window.location.href = 'index.html';
+  });
+
+  // ---------- password dimenticata ----------
+  document.getElementById('forgot-password-toggle').addEventListener('click', () => {
+    document.getElementById('forgot-password-panel').classList.toggle('hidden');
+  });
+
+  document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('forgot-email').value.trim();
+    const statusEl = document.getElementById('forgot-status');
+
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}${window.location.pathname.replace(/login\.html$/, '')}reset-password.html`,
+    });
+
+    statusEl.classList.remove('hidden');
+    if (error) {
+      console.error('Errore richiesta reset password:', error);
+      statusEl.textContent = error.message
+        ? error.message
+        : 'Hai già richiesto un reset da poco: aspetta circa un minuto e riprova.';
+    } else {
+      statusEl.textContent = 'Controlla la tua casella email: ti abbiamo inviato un link per reimpostare la password.';
+    }
+  });
+
+  // ---------- registrazione ----------
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const firstName = document.getElementById('register-first-name').value.trim();
+    const lastName = document.getElementById('register-last-name').value.trim();
+    const birthDate = document.getElementById('register-birthdate').value;
+    const gender = document.getElementById('register-gender').value;
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+    const termsAccepted = document.getElementById('register-terms').checked;
+    const errorEl = document.getElementById('register-error');
+    const successEl = document.getElementById('register-success');
+    const successText = successEl.querySelector('p');
+    errorEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+
+    if (!termsAccepted) {
+      errorEl.textContent = 'Devi accettare Termini di Servizio, Privacy Policy e Cookie Policy per registrarti.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const { data, error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          full_name: `${firstName} ${lastName}`.trim(),
+          birth_date: birthDate,
+          gender: gender,
+          notify_articles: true,
+          terms_accepted_at: new Date().toISOString(),
+        },
+      },
+    });
+
+    if (error) {
+      errorEl.textContent = error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    if (data.session) {
+      // email già confermata automaticamente: si entra subito
+      window.location.href = 'index.html';
+      return;
+    }
+
+    successText.textContent = `Account creato, ${firstName}! Controlla la tua casella email e clicca sul link di conferma prima di accedere.`;
+    successEl.classList.remove('hidden');
+    document.getElementById('register-form').reset();
+  });
+</script>
+
+</body>
+</html>

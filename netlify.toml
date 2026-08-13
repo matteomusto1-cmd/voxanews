@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# I vecchi link con ?id=... continuano a funzionare, ma le pagine
+# pre-renderizzate vivono in /articoli/<id>.html
+[[redirects]]
+  from = "/articolo.html"
+  to = "/articolo.html"
+  status = 200

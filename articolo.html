@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articolo — VoxaNews</title>
+<meta name="description" content="Leggi gli articoli di VoxaNews: politica, economia, tecnologia, cultura, sport e opinioni.">
+<meta property="og:title" content="Articolo — VoxaNews">
+<meta property="og:description" content="Leggi gli articoli di VoxaNews: politica, economia, tecnologia, cultura, sport e opinioni.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="VoxaNews">
+<meta property="og:image" content="https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Articolo — VoxaNews">
+<meta name="twitter:description" content="Leggi gli articoli di VoxaNews: politica, economia, tecnologia, cultura, sport e opinioni.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+  <article class="max-w-3xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+    <div id="article-container">
+      <p class="text-sm text-ink/40 py-10">Caricamento…</p>
+    </div>
+    <div id="comments-container" class="mt-16 pt-12 border-t border-hairline"></div>
+  </article>
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/articles.js"></script>
+<script src="assets/site.js"></script>
+<script>
+  initLayout(null);
+  renderArticlePage();
+</script>
+
+</body>
+</html>

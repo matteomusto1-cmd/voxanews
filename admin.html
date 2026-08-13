@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redazione — VoxaNews</title>
+<meta name="description" content="Pannello di redazione VoxaNews.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Redazione — VoxaNews">
+<meta property="og:description" content="Pannello di redazione VoxaNews.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoxaNews">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redazione — VoxaNews">
+<meta name="twitter:description" content="Pannello di redazione VoxaNews.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header class="border-b border-hairline bg-paper">
+  <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl font-bold text-ink">VoxaNews <span class="text-sm font-sans font-normal text-ink/40">/ redazione</span></a>
+    <div id="admin-user-area" class="text-sm"></div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+
+  <!-- ============ LOGIN ============ -->
+  <section id="login-section" class="max-w-md mx-auto">
+    <h1 class="font-serif text-3xl font-bold text-ink mb-2 text-center">Accesso redazione</h1>
+    <p class="text-sm text-ink/60 text-center mb-10">Riservato a chi gestisce i contenuti di VoxaNews.</p>
+
+    <form id="admin-login-form" class="flex flex-col gap-5" novalidate>
+      <div>
+        <label for="admin-email" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Email</label>
+        <input id="admin-email" type="email" autocomplete="username" required
+               class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+      </div>
+      <div>
+        <label for="admin-password" class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Password</label>
+        <input id="admin-password" type="password" autocomplete="current-password" required
+               class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+      </div>
+      <p id="admin-login-error" class="text-sm text-accent hidden">Email o password non corretti.</p>
+      <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+        Accedi
+      </button>
+    </form>
+
+    <button type="button" id="admin-forgot-toggle" class="block w-full text-center text-sm text-ink/60 hover:text-accent transition-colors duration-300 mt-5">
+      Password dimenticata?
+    </button>
+
+    <div id="admin-forgot-panel" class="hidden mt-5 pt-5 border-t border-hairline">
+      <p class="text-sm text-ink/60 mb-4">Inserisci la tua email: ti manderemo un link per reimpostare la password.</p>
+      <form id="admin-forgot-form" class="flex flex-col gap-3" novalidate>
+        <input id="admin-forgot-email" type="email" required placeholder="La tua email"
+               class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent transition-colors duration-300">
+        <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+          Invia link di reset
+        </button>
+        <p id="admin-forgot-status" class="text-sm text-accent hidden"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ ACCESSO NEGATO (loggato ma non redattore) ============ -->
+  <section id="denied-section" class="hidden max-w-md mx-auto text-center py-20">
+    <h1 class="font-serif text-2xl font-bold text-ink mb-4">Accesso riservato</h1>
+    <p class="text-sm text-ink/60">Il tuo account non ha i permessi per gestire gli articoli. Questa area è riservata alla redazione di VoxaNews.</p>
+  </section>
+
+  <!-- ============ DASHBOARD (visibile solo da loggati) ============ -->
+  <section id="dashboard-section" class="hidden">
+
+    <div class="flex items-center justify-between mb-10">
+      <h1 class="font-serif text-3xl font-bold text-ink">Gestione articoli</h1>
+      <button id="new-article-btn" class="bg-ink text-white text-sm font-semibold px-5 py-2.5 rounded-sm hover:bg-accent transition-colors duration-300">
+        + Nuovo articolo
+      </button>
+    </div>
+
+    <!-- Form crea/modifica -->
+    <div id="article-form-wrapper" class="hidden border border-hairline rounded-sm p-6 lg:p-8 mb-12">
+      <h2 id="form-title" class="font-serif text-xl font-bold text-ink mb-6">Nuovo articolo</h2>
+      <form id="article-form" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <input type="hidden" id="article-id">
+
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Titolo</label>
+          <input id="field-title" type="text" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Categoria</label>
+          <select id="field-category" required
+                  class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+            <option value="politica">Politica</option>
+            <option value="economia">Economia</option>
+            <option value="tecnologia">Tecnologia</option>
+            <option value="cultura">Cultura</option>
+            <option value="sport">Sport</option>
+            <option value="opinioni">Opinioni</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Autore</label>
+          <input id="field-author" type="text" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Estratto (lead)</label>
+          <textarea id="field-excerpt" rows="3"
+                    class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent"></textarea>
+          <p class="text-xs text-ink/40 mt-1">Il breve testo mostrato in homepage sopra al titolo.</p>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Testo completo dell'articolo</label>
+          <textarea id="field-content" rows="10"
+                    class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent"></textarea>
+          <p class="text-xs text-ink/40 mt-1">Vai a capo due volte per separare i paragrafi. Scrivi <span class="font-mono">## Il tuo sottotitolo</span> su una riga da sola per un sottotitolo in grassetto, e <span class="font-mono">**parola**</span> per una singola parola o frase in grassetto dentro un paragrafo.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Tempo di lettura (min)</label>
+          <input id="field-read-minutes" type="number" min="1" max="60" value="4" required
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Pubblicazione</label>
+          <input id="field-publish-at" type="datetime-local"
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+          <p class="text-xs text-ink/40 mt-1">Lascia vuoto per pubblicare subito, oppure scegli una data e un'ora future per programmarlo.</p>
+        </div>
+
+        <div class="flex items-end gap-3">
+          <label class="flex items-center gap-2 text-sm text-ink/70 mb-3">
+            <input id="field-featured" type="checkbox" class="rounded-sm">
+            Mostra come articolo in evidenza in homepage
+          </label>
+        </div>
+
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Immagine</label>
+          <input id="field-image-file" type="file" accept="image/*"
+                 class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-sm file:border-0 file:bg-ink file:text-white file:text-xs file:font-semibold hover:file:bg-accent file:cursor-pointer cursor-pointer">
+          <p id="image-upload-status" class="text-xs text-ink/50 mt-2"></p>
+          <input type="hidden" id="field-image-url">
+          <img id="image-preview" class="hidden mt-3 h-32 w-auto object-cover rounded-sm border border-hairline">
+        </div>
+
+        <div class="lg:col-span-2 flex items-center gap-4 pt-2">
+          <button type="submit" id="save-article-btn" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+            Salva articolo
+          </button>
+          <button type="button" id="cancel-form-btn" class="text-sm font-medium text-ink/60 hover:text-accent transition-colors duration-300">
+            Annulla
+          </button>
+          <p id="save-status" class="text-sm text-accent"></p>
+        </div>
+      </form>
+    </div>
+
+    <!-- Lista articoli -->
+    <div>
+      <h2 class="font-serif text-xl font-bold text-ink mb-6">Articoli pubblicati</h2>
+      <div id="articles-list" class="divide-y divide-hairline border-t border-b border-hairline">
+        <p class="text-sm text-ink/40 py-6">Caricamento…</p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/articles.js"></script>
+<script>
+  const loginSection = document.getElementById('login-section');
+  const dashboardSection = document.getElementById('dashboard-section');
+  const deniedSection = document.getElementById('denied-section');
+  const adminUserArea = document.getElementById('admin-user-area');
+
+  const formWrapper = document.getElementById('article-form-wrapper');
+  const articleForm = document.getElementById('article-form');
+  const formTitle = document.getElementById('form-title');
+  const newArticleBtn = document.getElementById('new-article-btn');
+  const cancelFormBtn = document.getElementById('cancel-form-btn');
+  const saveStatus = document.getElementById('save-status');
+  const articlesList = document.getElementById('articles-list');
+
+  const imageFileInput = document.getElementById('field-image-file');
+  const imageUrlInput = document.getElementById('field-image-url');
+  const imageUploadStatus = document.getElementById('image-upload-status');
+  const imagePreview = document.getElementById('image-preview');
+
+  // ---------- Autenticazione ----------
+  async function refreshAuthUI() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      loginSection.classList.remove('hidden');
+      dashboardSection.classList.add('hidden');
+      deniedSection.classList.add('hidden');
+      adminUserArea.innerHTML = '';
+      return;
+    }
+
+    const { data: adminRow } = await sb.from('admins').select('user_id').eq('user_id', session.user.id).maybeSingle();
+
+    adminUserArea.innerHTML = `
+      <span class="text-ink/60 mr-4">${session.user.email}</span>
+      <button id="logout-btn" class="font-medium text-accent hover:text-ink transition-colors duration-300">Esci</button>
+    `;
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      refreshAuthUI();
+    });
+
+    loginSection.classList.add('hidden');
+
+    if (adminRow) {
+      deniedSection.classList.add('hidden');
+      dashboardSection.classList.remove('hidden');
+      loadArticlesList();
+    } else {
+      dashboardSection.classList.add('hidden');
+      deniedSection.classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-email').value.trim();
+    const password = document.getElementById('admin-password').value;
+    const errorEl = document.getElementById('admin-login-error');
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errorEl.textContent = error.message === 'Invalid login credentials'
+        ? 'Email o password non corretti, oppure l\'account non è ancora confermato (controlla su Supabase → Authentication → Users).'
+        : error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    errorEl.classList.add('hidden');
+    refreshAuthUI();
+  });
+
+  // ---------- password dimenticata (redazione) ----------
+  document.getElementById('admin-forgot-toggle').addEventListener('click', () => {
+    document.getElementById('admin-forgot-panel').classList.toggle('hidden');
+  });
+
+  document.getElementById('admin-forgot-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('admin-forgot-email').value.trim();
+    const statusEl = document.getElementById('admin-forgot-status');
+
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}${window.location.pathname.replace(/admin\.html$/, '')}reset-password.html`,
+    });
+
+    statusEl.classList.remove('hidden');
+    if (error) {
+      console.error('Errore richiesta reset password:', error);
+      statusEl.textContent = error.message
+        ? error.message
+        : 'Hai già richiesto un reset da poco: aspetta circa un minuto e riprova.';
+    } else {
+      statusEl.textContent = 'Controlla la tua casella email: ti abbiamo inviato un link per reimpostare la password.';
+    }
+  });
+
+  // ---------- Upload immagine ----------
+  imageFileInput.addEventListener('change', async () => {
+    const file = imageFileInput.files[0];
+    if (!file) return;
+    imageUploadStatus.textContent = 'Caricamento immagine…';
+
+    const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`;
+    const { error } = await sb.storage.from('article-images').upload(path, file, { upsert: false });
+
+    if (error) {
+      imageUploadStatus.textContent = 'Errore nel caricamento: ' + error.message;
+      return;
+    }
+
+    const { data } = sb.storage.from('article-images').getPublicUrl(path);
+    imageUrlInput.value = data.publicUrl;
+    imagePreview.src = data.publicUrl;
+    imagePreview.classList.remove('hidden');
+    imageUploadStatus.textContent = 'Immagine caricata ✓';
+  });
+
+  // ---------- Form nuovo / modifica articolo ----------
+  function openForm(article) {
+    articleForm.reset();
+    imagePreview.classList.add('hidden');
+    imageUploadStatus.textContent = '';
+    imageUrlInput.value = '';
+    saveStatus.textContent = '';
+
+    if (article) {
+      formTitle.textContent = 'Modifica articolo';
+      document.getElementById('article-id').value = article.id;
+      document.getElementById('field-title').value = article.title;
+      document.getElementById('field-category').value = article.category;
+      document.getElementById('field-author').value = article.author;
+      document.getElementById('field-excerpt').value = article.excerpt || '';
+      document.getElementById('field-content').value = article.content || '';
+      document.getElementById('field-read-minutes').value = article.read_minutes;
+      document.getElementById('field-featured').checked = !!article.featured;
+      if (article.publish_at) {
+        const d = new Date(article.publish_at);
+        const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        document.getElementById('field-publish-at').value = local;
+      }
+      imageUrlInput.value = article.image_url || '';
+      if (article.image_url) {
+        imagePreview.src = article.image_url;
+        imagePreview.classList.remove('hidden');
+      }
+    } else {
+      formTitle.textContent = 'Nuovo articolo';
+      document.getElementById('article-id').value = '';
+    }
+
+    formWrapper.classList.remove('hidden');
+    formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  newArticleBtn.addEventListener('click', () => openForm(null));
+  cancelFormBtn.addEventListener('click', () => formWrapper.classList.add('hidden'));
+
+  articleForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveStatus.textContent = 'Salvataggio…';
+
+    const id = document.getElementById('article-id').value;
+    const publishAtInput = document.getElementById('field-publish-at').value;
+    const publishAt = publishAtInput ? new Date(publishAtInput).toISOString() : new Date().toISOString();
+    const isFuture = new Date(publishAt) > new Date();
+
+    const payload = {
+      title: document.getElementById('field-title').value.trim(),
+      category: document.getElementById('field-category').value,
+      author: document.getElementById('field-author').value.trim(),
+      excerpt: document.getElementById('field-excerpt').value.trim(),
+      content: document.getElementById('field-content').value.trim(),
+      read_minutes: parseInt(document.getElementById('field-read-minutes').value, 10) || 3,
+      featured: document.getElementById('field-featured').checked,
+      image_url: imageUrlInput.value || null,
+      image_alt: document.getElementById('field-title').value.trim(),
+      publish_at: publishAt,
+    };
+
+    // Se viene riprogrammato nel futuro (o creato per il futuro), resetta il flag di notifica
+    // così il controllo automatico manderà l'email quando arriverà davvero il momento
+    if (isFuture) {
+      payload.notified = false;
+    }
+
+    let error;
+    if (id) {
+      ({ error } = await sb.from('articles').update(payload).eq('id', id));
+    } else {
+      ({ error } = await sb.from('articles').insert(payload));
+    }
+
+    if (error) {
+      saveStatus.textContent = 'Errore: ' + error.message;
+      return;
+    }
+
+    saveStatus.textContent = 'Salvato ✓';
+    setTimeout(() => {
+      formWrapper.classList.add('hidden');
+      loadArticlesList();
+    }, 600);
+  });
+
+  // ---------- Lista articoli ----------
+  async function loadArticlesList() {
+    const { data, error } = await sb.from('articles').select('*').order('created_at', { ascending: false });
+
+    if (error) {
+      articlesList.innerHTML = `<p class="text-sm text-accent py-6">Errore nel caricamento: ${error.message}</p>`;
+      return;
+    }
+
+    if (!data.length) {
+      articlesList.innerHTML = '<p class="text-sm text-ink/40 py-6">Nessun articolo pubblicato. Creane uno con "+ Nuovo articolo".</p>';
+      return;
+    }
+
+    articlesList.innerHTML = data.map(article => {
+      const publishDate = new Date(article.publish_at);
+      const isFuture = publishDate > new Date();
+      const dateLabel = publishDate.toLocaleString('it-IT', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      const scheduleLabel = isFuture
+        ? `<span class="text-accent font-semibold">Programmato per il ${dateLabel}</span>`
+        : `Pubblicato il ${dateLabel}`;
+      return `
+      <div class="flex items-center gap-4 py-4">
+        <img src="${article.image_url || FALLBACK_IMG}" class="w-16 h-16 object-cover rounded-sm shrink-0">
+        <div class="flex-1 min-w-0">
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-accent">${categoryLabel(article.category)}${article.featured ? ' · In evidenza' : ''}</p>
+          <p class="font-serif font-semibold text-ink truncate">${escapeHtml(article.title)}</p>
+          <p class="text-xs text-ink/50">di ${escapeHtml(article.author)} · ${article.read_minutes} min read · ${scheduleLabel}</p>
+        </div>
+        <button data-id="${article.id}" class="edit-btn text-sm font-medium text-ink/70 hover:text-accent transition-colors duration-300 shrink-0">Modifica</button>
+        <button data-id="${article.id}" class="delete-btn text-sm font-medium text-accent/70 hover:text-accent transition-colors duration-300 shrink-0">Elimina</button>
+      </div>
+    `;
+    }).join('');
+
+    articlesList.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const article = data.find(a => a.id === btn.dataset.id);
+        openForm(article);
+      });
+    });
+
+    articlesList.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Eliminare questo articolo? L\'azione non è reversibile.')) return;
+        const { error } = await sb.from('articles').delete().eq('id', btn.dataset.id);
+        if (error) { alert('Errore: ' + error.message); return; }
+        loadArticlesList();
+      });
+    });
+  }
+
+  refreshAuthUI();
+</script>
+
+</body>
+</html>

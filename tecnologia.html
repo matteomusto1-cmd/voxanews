@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tecnologia — VoxaNews</title>
+<meta name="description" content="Intelligenza artificiale, cybersicurezza e innovazione: come la tecnologia cambia il modo in cui lavoriamo e viviamo.">
+<meta property="og:title" content="Tecnologia — VoxaNews">
+<meta property="og:description" content="Intelligenza artificiale, cybersicurezza e innovazione: come la tecnologia cambia il modo in cui lavoriamo e viviamo.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoxaNews">
+<meta property="og:image" content="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tecnologia — VoxaNews">
+<meta name="twitter:description" content="Intelligenza artificiale, cybersicurezza e innovazione: come la tecnologia cambia il modo in cui lavoriamo e viviamo.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+
+  <!-- ============ HERO SEZIONE ============ -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-8 pt-12 lg:pt-16 pb-10 lg:pb-12 border-b border-hairline">
+    <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">Sezione</p>
+    <h1 class="font-serif text-4xl lg:text-5xl font-bold text-ink mb-4">Tecnologia</h1>
+    <p class="text-lg text-ink/60 max-w-2xl leading-relaxed">Intelligenza artificiale, cybersicurezza e innovazione: come la tecnologia cambia il modo in cui lavoriamo e viviamo.</p>
+  </section>
+
+  <!-- ============ GRIGLIA ARTICOLI ============ -->
+  <section class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
+    <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+      <p class="text-sm text-ink/40 col-span-full">Caricamento…</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/articles.js"></script>
+<script src="assets/site.js"></script>
+<script>
+  initLayout('tecnologia');
+  renderCategory('tecnologia');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — VoxaNews</title>
+<meta name="description" content="Informativa sul trattamento dei dati personali di VoxaNews, ai sensi del Regolamento UE 2016/679 (GDPR).">
+<meta property="og:title" content="Privacy Policy — VoxaNews">
+<meta property="og:description" content="Informativa sul trattamento dei dati personali di VoxaNews.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoxaNews">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header id="site-header" class="sticky top-0 z-50 bg-paper/95 border-b border-hairline">
+  <div id="header-placeholder"></div>
+</header>
+
+<main>
+  <article class="max-w-3xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+
+    <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">Legale</p>
+    <h1 class="font-serif text-4xl font-bold text-ink mb-2">Privacy Policy</h1>
+    <p class="text-sm text-ink/50 mb-12">Ai sensi dell'art. 13 del Regolamento (UE) 2016/679 (GDPR) — Ultimo aggiornamento: 18 luglio 2026</p>
+
+    <div class="prose-legal text-ink/80 leading-relaxed space-y-8">
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Titolare del trattamento</h2>
+        <p>Il Titolare del trattamento dei dati personali è <strong>Matteo Musto</strong>, con sede in Udine, via Guglielmo Pelizzo 11, e-mail di contatto: <strong>voxa.news2026@gmail.com</strong>.</p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Tipologia di dati raccolti</h2>
+        <p class="mb-3">Raccogliamo unicamente i dati strettamente necessari per l'erogazione del servizio richiesto. Nello specifico:</p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li><strong>Dati di registrazione:</strong> indirizzo email e nome, se fornito in fase di registrazione</li>
+          <li><strong>Dati di navigazione:</strong> indirizzi IP e log di sistema necessari per il corretto e sicuro funzionamento del sito</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Finalità e base giuridica del trattamento</h2>
+        <p class="mb-3">I tuoi dati personali non verranno utilizzati per finalità di marketing o profilazione, né venduti a terzi. Sono trattati esclusivamente per le seguenti finalità:</p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li><strong>Creazione e gestione dell'account:</strong> consentirti di registrarti al sito</li>
+          <li><strong>Notifiche editoriali:</strong> inviarti un'email automatica ogni volta che viene pubblicato un nuovo articolo</li>
+        </ul>
+        <p class="mt-3"><em>Base giuridica:</em> l'esecuzione di un contratto di cui l'interessato è parte o l'esecuzione di misure precontrattuali (art. 6, par. 1, lett. b, GDPR), e il consenso esplicito per l'invio delle comunicazioni (art. 6, par. 1, lett. a, GDPR).</p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Conservazione e condivisione dei dati (responsabili esterni)</h2>
+        <p class="mb-3">I tuoi dati sono conservati in modo sicuro e per il solo tempo necessario a mantenere attivo il tuo account. In caso di cancellazione del profilo, i dati verranno rimossi definitivamente.</p>
+        <p>Per la gestione del database e l'autenticazione degli utenti, il sito si avvale di <strong>Supabase</strong>, che agisce in qualità di Responsabile del Trattamento dei dati. I dati elaborati tramite Supabase sono gestiti nel rispetto degli standard di sicurezza internazionali.</p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">I diritti dell'utente</h2>
+        <p class="mb-3">Ai sensi degli artt. 15-22 del GDPR, hai il diritto in ogni momento di:</p>
+        <ul class="list-disc pl-6 space-y-1">
+          <li>Accedere ai tuoi dati personali</li>
+          <li>Chiederne la rettifica o la cancellazione ("diritto all'oblio")</li>
+          <li>Revocare il consenso per la ricezione delle email di notifica</li>
+          <li>Ottenere la portabilità dei dati</li>
+        </ul>
+        <p class="mt-3">Per esercitare i tuoi diritti, puoi contattare il Titolare all'indirizzo email indicato sopra.</p>
+      </section>
+
+      <section>
+        <h2 class="font-serif text-xl font-bold text-ink mb-3">Cookie e tecnologie simili</h2>
+        <p>Per i dettagli sui cookie e sulle tecnologie di memorizzazione locale utilizzate dal sito, consulta la nostra <a href="cookie.html" class="text-accent hover:text-ink transition-colors duration-300 underline">Cookie Policy</a>.</p>
+      </section>
+
+    </div>
+  </article>
+</main>
+
+<footer class="border-t border-hairline bg-paper">
+  <div id="footer-placeholder"></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="assets/site.js"></script>
+<script>initLayout(null);</script>
+
+</body>
+</html>
