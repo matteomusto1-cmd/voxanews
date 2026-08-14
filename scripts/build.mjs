@@ -54,7 +54,7 @@ function renderBodyParagraphs(content) {
 }
 
 function articleHref(article) {
-  return `articolo.html?id=${encodeURIComponent(article.id)}`;
+  return `/articoli/${article.id}.html`;
 }
 
 function renderCardHTML(article) {
@@ -214,7 +214,7 @@ async function build() {
 
     const articleContent = `
       <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">
-        <a href="../${article.category}.html" class="hover:text-ink transition-colors duration-300">${categoryLabel}</a>
+        <a href="/${article.category}.html" class="hover:text-ink transition-colors duration-300">${categoryLabel}</a>
       </p>
       <h1 class="font-serif text-3xl lg:text-[42px] leading-[1.15] font-bold text-ink mb-5">${escapeHtml(article.title)}</h1>
       <div class="flex items-center gap-3 text-sm text-ink/60 mb-8">
