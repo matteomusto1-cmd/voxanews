@@ -263,7 +263,7 @@ async function build() {
 
   fs.writeFileSync(
     path.join(distDir, 'robots.txt'),
-    `User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /account.html\nDisallow: /login.html\nDisallow: /reset-password.html\n\nSitemap: ${SITE_URL}/sitemap.xml\n`
+    `User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /account.html\nDisallow: /login.html\nDisallow: /reset-password.html\nDisallow: /caroselli.html\n\nSitemap: ${SITE_URL}/sitemap.xml\n`
   );
   console.log('✓ sitemap.xml e robots.txt generati');
 
