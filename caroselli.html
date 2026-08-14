@@ -166,6 +166,7 @@
         <button type="button" class="remove-slide-btn text-xs text-accent/70 hover:text-accent">Rimuovi</button>
       </div>
       <textarea rows="4" class="slide-text w-full border border-hairline bg-white px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-accent" placeholder="Scrivi qui il punto chiave di questa slide...">${text}</textarea>
+      <p class="text-[11px] text-ink/40 mt-1">Usa <span class="font-mono">**parola**</span> per mettere in grassetto.</p>
     `;
     document.getElementById('content-slides').appendChild(div);
     div.querySelector('.remove-slide-btn').addEventListener('click', () => {
@@ -181,6 +182,66 @@
   }
 
   // ---------- Disegno slide su canvas ----------
+  // Divide il testo in segmenti, marcando quelli tra ** come grassetto
+  function parseBoldSegments(text) {
+    const segments = [];
+    const regex = /\*\*(.+?)\*\*/g;
+    let lastIndex = 0;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        segments.push({ text: text.slice(lastIndex, match.index), bold: false });
+      }
+      segments.push({ text: match[1], bold: true });
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      segments.push({ text: text.slice(lastIndex), bold: false });
+    }
+    return segments.length ? segments : [{ text, bold: false }];
+  }
+
+  // Manda a capo tenendo conto dei segmenti in grassetto
+  function wrapRichText(ctx, text, maxWidth, fontSize, fontFamily) {
+    const segments = parseBoldSegments(text);
+    const words = [];
+    for (const seg of segments) {
+      const parts = seg.text.split(/(\s+)/);
+      for (const p of parts) {
+        if (p) words.push({ text: p, bold: seg.bold });
+      }
+    }
+
+    const lines = [];
+    let line = [];
+    let lineWidth = 0;
+
+    for (const word of words) {
+      ctx.font = `${word.bold ? '700' : '400'} ${fontSize}px ${fontFamily}`;
+      const w = ctx.measureText(word.text).width;
+      if (lineWidth + w > maxWidth && line.length && word.text.trim()) {
+        lines.push(line);
+        line = [word];
+        lineWidth = w;
+      } else {
+        line.push(word);
+        lineWidth += w;
+      }
+    }
+    if (line.length) lines.push(line);
+    return lines;
+  }
+
+  // Disegna una riga composta da segmenti normali e in grassetto
+  function drawRichLine(ctx, lineWords, x, y, fontSize, fontFamily) {
+    let cursor = x;
+    for (const word of lineWords) {
+      ctx.font = `${word.bold ? '700' : '400'} ${fontSize}px ${fontFamily}`;
+      ctx.fillText(word.text, cursor, y);
+      cursor += ctx.measureText(word.text).width;
+    }
+  }
+
   function wrapText(ctx, text, maxWidth) {
     const words = text.split(' ');
     const lines = [];
@@ -258,19 +319,20 @@
     ctx.fillStyle = COLORS.hairline;
     ctx.fillRect(90, 150, SIZE - 180, 2);
 
-    // Testo
+    // Testo (supporta **grassetto**)
+    const plainText = text.replace(/\*\*/g, '');
     let fontSize = 52;
-    if (text.length > 340) fontSize = 36;
-    else if (text.length > 220) fontSize = 42;
-    else if (text.length > 140) fontSize = 46;
+    if (plainText.length > 340) fontSize = 36;
+    else if (plainText.length > 220) fontSize = 42;
+    else if (plainText.length > 140) fontSize = 46;
 
-    ctx.font = `400 ${fontSize}px Inter, sans-serif`;
     ctx.fillStyle = COLORS.ink;
-    const lines = wrapText(ctx, text, SIZE - 180);
+    const fontFamily = 'Inter, sans-serif';
+    const lines = wrapRichText(ctx, text, SIZE - 180, fontSize, fontFamily);
     const lineHeight = fontSize * 1.5;
     let y = (SIZE - lines.length * lineHeight) / 2 + fontSize;
     for (const line of lines.slice(0, 12)) {
-      ctx.fillText(line, 90, y);
+      drawRichLine(ctx, line, 90, y, fontSize, fontFamily);
       y += lineHeight;
     }
   }
@@ -318,6 +380,19 @@
     else drawClosing(ctx, payload.text);
   }
 
+  function downloadCanvas(canvas, filename) {
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
   async function renderPreview() {
     await document.fonts.ready;
     const { category, title, contents, closing } = getSlideData();
@@ -335,8 +410,22 @@
       const canvas = document.createElement('canvas');
       canvas.className = 'w-full border border-hairline rounded-sm';
       renderSlideToCanvas(canvas, slide.type, slide.payload, slide.index, total);
+
+      const filename = `voxanews-slide-${String(i + 1).padStart(2, '0')}.png`;
+
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = `<p class="text-[11px] text-ink/40 mb-1">Slide ${i + 1}</p>`;
+      const label = document.createElement('div');
+      label.className = 'flex items-center justify-between mb-1';
+      label.innerHTML = `<p class="text-[11px] text-ink/40">Slide ${i + 1}</p>`;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'text-[11px] font-semibold text-accent hover:text-ink transition-colors duration-300';
+      btn.textContent = 'Scarica ↓';
+      btn.addEventListener('click', () => downloadCanvas(canvas, filename));
+      label.appendChild(btn);
+
+      wrapper.appendChild(label);
       wrapper.appendChild(canvas);
       container.appendChild(wrapper);
     });
@@ -344,22 +433,14 @@
 
   async function downloadAll() {
     await document.fonts.ready;
-    const { category, title, contents, closing } = getSlideData();
-    const total = contents.length;
-    const slides = [
-      { type: 'cover', payload: { category, title } },
-      ...contents.map((text, i) => ({ type: 'content', payload: { text }, index: i + 1 })),
-      { type: 'closing', payload: { text: closing } },
-    ];
-
-    for (let i = 0; i < slides.length; i++) {
-      const canvas = document.createElement('canvas');
-      renderSlideToCanvas(canvas, slides[i].type, slides[i].payload, slides[i].index, total);
-      const link = document.createElement('a');
-      link.download = `voxanews-slide-${String(i + 1).padStart(2, '0')}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      await new Promise(r => setTimeout(r, 350));
+    const canvases = document.querySelectorAll('#preview-container canvas');
+    if (!canvases.length) {
+      alert('Genera prima l\'anteprima.');
+      return;
+    }
+    for (let i = 0; i < canvases.length; i++) {
+      downloadCanvas(canvases[i], `voxanews-slide-${String(i + 1).padStart(2, '0')}.png`);
+      await new Promise((r) => setTimeout(r, 600));
     }
   }
 
