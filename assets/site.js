@@ -5,12 +5,12 @@
 // ============================================================
 
 const NAV_ITEMS = [
-  { key: 'politica', label: 'Politica', href: 'politica.html' },
-  { key: 'economia', label: 'Economia', href: 'economia.html' },
-  { key: 'tecnologia', label: 'Tecnologia', href: 'tecnologia.html' },
-  { key: 'cultura', label: 'Cultura', href: 'cultura.html' },
-  { key: 'sport', label: 'Sport', href: 'sport.html' },
-  { key: 'opinioni', label: 'Opinioni', href: 'opinioni.html' },
+  { key: 'politica', label: 'Politica', href: '/politica.html' },
+  { key: 'economia', label: 'Economia', href: '/economia.html' },
+  { key: 'tecnologia', label: 'Tecnologia', href: '/tecnologia.html' },
+  { key: 'cultura', label: 'Cultura', href: '/cultura.html' },
+  { key: 'sport', label: 'Sport', href: '/sport.html' },
+  { key: 'opinioni', label: 'Opinioni', href: '/opinioni.html' },
 ];
 
 async function getAuthState() {
@@ -34,23 +34,23 @@ function buildHeaderHTML(activeKey, auth) {
   if (auth.loggedIn) {
     authDesktop = `
       <span class="text-sm text-ink/70">Ciao, <span class="font-medium text-ink">${auth.displayName}</span></span>
-      <a href="account.html" class="text-sm font-medium text-ink/70 hover:text-accent transition-colors duration-300">Il mio account</a>
+      <a href="/account.html" class="text-sm font-medium text-ink/70 hover:text-accent transition-colors duration-300">Il mio account</a>
       <button id="logout-btn" class="text-sm font-semibold bg-ink text-white px-5 py-2.5 rounded-sm hover:bg-accent transition-colors duration-300">Esci</button>
     `;
     authMobile = `
       <div class="flex flex-col gap-3 pt-4 border-t border-hairline mt-2 normal-case">
         <span class="text-sm text-ink/70">Ciao, <span class="font-medium text-ink">${auth.displayName}</span></span>
-        <a href="account.html" class="font-medium text-ink/70">Il mio account</a>
+        <a href="/account.html" class="font-medium text-ink/70">Il mio account</a>
         <button id="logout-btn-mobile" class="font-semibold bg-ink text-white px-5 py-2.5 rounded-sm text-center">Esci</button>
       </div>
     `;
   } else {
     authDesktop = `
-      <a href="login.html" class="text-sm font-semibold bg-ink text-white px-5 py-2.5 rounded-sm hover:bg-accent transition-colors duration-300">Accedi</a>
+      <a href="/login.html" class="text-sm font-semibold bg-ink text-white px-5 py-2.5 rounded-sm hover:bg-accent transition-colors duration-300">Accedi</a>
     `;
     authMobile = `
       <div class="pt-4 border-t border-hairline mt-2 normal-case">
-        <a href="login.html" class="block font-semibold bg-ink text-white px-5 py-2.5 rounded-sm text-center">Accedi</a>
+        <a href="/login.html" class="block font-semibold bg-ink text-white px-5 py-2.5 rounded-sm text-center">Accedi</a>
       </div>
     `;
   }
@@ -58,7 +58,7 @@ function buildHeaderHTML(activeKey, auth) {
   return `
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="flex items-center justify-between h-20">
-        <a href="index.html" class="font-serif text-2xl lg:text-[28px] font-bold tracking-tight text-ink shrink-0">VoxaNews</a>
+        <a href="/index.html" class="font-serif text-2xl lg:text-[28px] font-bold tracking-tight text-ink shrink-0">VoxaNews</a>
         <nav class="hidden lg:flex items-center gap-10 text-[13px] font-medium uppercase tracking-wide text-ink/80">
           ${navLinksDesktop}
         </nav>
@@ -91,7 +91,7 @@ function buildFooterHTML(auth) {
       <div>
         <h3 class="font-serif text-2xl font-bold text-ink mb-2">Resta informato</h3>
         <p class="text-ink/60 text-sm max-w-md mb-4">Registrati per ricevere una email ogni volta che pubblichiamo un nuovo articolo.</p>
-        <a href="login.html" class="inline-block bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">Registrati</a>
+        <a href="/login.html" class="inline-block bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">Registrati</a>
       </div>
     `;
 
@@ -105,36 +105,36 @@ function buildFooterHTML(auth) {
         <div>
           <h4 class="text-xs font-semibold uppercase tracking-widest text-ink/50 mb-4">Sezioni</h4>
           <ul class="space-y-3 text-sm text-ink/70">
-            <li><a href="politica.html" class="hover:text-accent transition-colors duration-300">Politica</a></li>
-            <li><a href="economia.html" class="hover:text-accent transition-colors duration-300">Economia</a></li>
-            <li><a href="tecnologia.html" class="hover:text-accent transition-colors duration-300">Tecnologia</a></li>
-            <li><a href="cultura.html" class="hover:text-accent transition-colors duration-300">Cultura</a></li>
+            <li><a href="/politica.html" class="hover:text-accent transition-colors duration-300">Politica</a></li>
+            <li><a href="/economia.html" class="hover:text-accent transition-colors duration-300">Economia</a></li>
+            <li><a href="/tecnologia.html" class="hover:text-accent transition-colors duration-300">Tecnologia</a></li>
+            <li><a href="/cultura.html" class="hover:text-accent transition-colors duration-300">Cultura</a></li>
           </ul>
         </div>
         <div>
           <h4 class="text-xs font-semibold uppercase tracking-widest text-ink/50 mb-4">Altre sezioni</h4>
           <ul class="space-y-3 text-sm text-ink/70">
-            <li><a href="sport.html" class="hover:text-accent transition-colors duration-300">Sport</a></li>
-            <li><a href="opinioni.html" class="hover:text-accent transition-colors duration-300">Opinioni</a></li>
-            <li><a href="index.html" class="hover:text-accent transition-colors duration-300">Home</a></li>
+            <li><a href="/sport.html" class="hover:text-accent transition-colors duration-300">Sport</a></li>
+            <li><a href="/opinioni.html" class="hover:text-accent transition-colors duration-300">Opinioni</a></li>
+            <li><a href="/index.html" class="hover:text-accent transition-colors duration-300">Home</a></li>
             <li><a href="#" class="hover:text-accent transition-colors duration-300">Redazione</a></li>
           </ul>
         </div>
         <div>
           <h4 class="text-xs font-semibold uppercase tracking-widest text-ink/50 mb-4">Il giornale</h4>
           <ul class="space-y-3 text-sm text-ink/70">
-            <li><a href="chi-siamo.html" class="hover:text-accent transition-colors duration-300">Chi siamo</a></li>
-            <li><a href="lavora-con-noi.html" class="hover:text-accent transition-colors duration-300">Lavora con noi</a></li>
-            <li><a href="contatti.html" class="hover:text-accent transition-colors duration-300">Contatti</a></li>
-            <li><a href="admin.html" class="hover:text-accent transition-colors duration-300">Accesso redazione</a></li>
+            <li><a href="/chi-siamo.html" class="hover:text-accent transition-colors duration-300">Chi siamo</a></li>
+            <li><a href="/lavora-con-noi.html" class="hover:text-accent transition-colors duration-300">Lavora con noi</a></li>
+            <li><a href="/contatti.html" class="hover:text-accent transition-colors duration-300">Contatti</a></li>
+            <li><a href="/admin.html" class="hover:text-accent transition-colors duration-300">Accesso redazione</a></li>
           </ul>
         </div>
         <div>
           <h4 class="text-xs font-semibold uppercase tracking-widest text-ink/50 mb-4">Legale</h4>
           <ul class="space-y-3 text-sm text-ink/70">
-            <li><a href="privacy.html" class="hover:text-accent transition-colors duration-300">Privacy policy</a></li>
-            <li><a href="cookie.html" class="hover:text-accent transition-colors duration-300">Cookie policy</a></li>
-            <li><a href="termini.html" class="hover:text-accent transition-colors duration-300">Termini di servizio</a></li>
+            <li><a href="/privacy.html" class="hover:text-accent transition-colors duration-300">Privacy policy</a></li>
+            <li><a href="/cookie.html" class="hover:text-accent transition-colors duration-300">Cookie policy</a></li>
+            <li><a href="/termini.html" class="hover:text-accent transition-colors duration-300">Termini di servizio</a></li>
           </ul>
         </div>
       </div>
@@ -184,7 +184,7 @@ function wireLogoutButtons() {
     if (!btn) return;
     btn.addEventListener('click', async () => {
       await sb.auth.signOut();
-      window.location.href = 'index.html';
+      window.location.href = '/index.html';
     });
   });
 }

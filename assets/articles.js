@@ -41,10 +41,8 @@ async function fetchArticles({ category = null, limit = 20 } = {}) {
 }
 
 function articleHref(article) {
-  // Punta alla pagina pre-renderizzata (migliore per SEO e anteprime social).
-  // Il prefisso cambia se ci troviamo già dentro la cartella /articoli/
-  const prefix = window.location.pathname.includes('/articoli/') ? '' : 'articoli/';
-  return `${prefix}${article.id}.html`;
+  // Percorso assoluto: funziona da qualsiasi pagina, anche dentro /articoli/
+  return `/articoli/${article.id}.html`;
 }
 
 function renderHeroHTML(article) {
@@ -228,7 +226,7 @@ async function renderCommentsSection(articleId) {
         <button type="submit" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">Pubblica commento</button>
       </form>
     `
-    : `<p class="text-sm text-ink/60 mb-8"><a href="login.html" class="text-accent hover:text-ink underline transition-colors duration-300">Accedi</a> per lasciare un commento.</p>`;
+    : `<p class="text-sm text-ink/60 mb-8"><a href="/login.html" class="text-accent hover:text-ink underline transition-colors duration-300">Accedi</a> per lasciare un commento.</p>`;
 
   const commentsHTML = comments.length
     ? comments.map((c) => renderCommentHTML(c, currentUserId, isAdmin)).join('')
@@ -377,7 +375,7 @@ async function renderArticlePage() {
 
   container.innerHTML = `
     <p class="text-[13px] font-semibold uppercase tracking-widest text-accent mb-3">
-      <a href="${article.category}.html" class="hover:text-ink transition-colors duration-300">${categoryLabel(article.category)}</a>
+      <a href="/${article.category}.html" class="hover:text-ink transition-colors duration-300">${categoryLabel(article.category)}</a>
     </p>
     <h1 class="font-serif text-3xl lg:text-[42px] leading-[1.15] font-bold text-ink mb-5">${escapeHtml(article.title)}</h1>
     <div class="flex items-center gap-3 text-sm text-ink/60 mb-8">
