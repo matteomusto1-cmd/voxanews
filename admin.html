@@ -374,12 +374,13 @@
       publish_at: publishAt,
     };
 
-    // Se viene riprogrammato nel futuro (o creato per il futuro), resetta i flag
-    // così il controllo automatico manderà l'email e rigenererà il sito
-    // quando arriverà davvero il momento
+    // Articolo programmato nel futuro: i controlli automatici manderanno l'email
+    // e rigenereranno il sito al momento giusto.
+    // Articolo pubblicato subito: ci pensa già il trigger di inserimento/modifica,
+    // quindi lo marchiamo come gestito per non far partire una seconda build.
+    payload.site_built = !isFuture;
     if (isFuture) {
       payload.notified = false;
-      payload.site_built = false;
     }
 
     let error;

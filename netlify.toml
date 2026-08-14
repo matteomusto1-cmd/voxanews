@@ -2,9 +2,11 @@
   command = "npm run build"
   publish = "dist"
 
-# I vecchi link con ?id=... continuano a funzionare, ma le pagine
-# pre-renderizzate vivono in /articoli/<id>.html
+# Se una pagina articolo non è ancora stata pre-renderizzata (perché il sito
+# non è stato ricostruito dopo la pubblicazione), viene servita comunque
+# articolo.html, che carica il contenuto dal database lato browser.
+# I file già pre-renderizzati hanno la precedenza e vengono serviti direttamente.
 [[redirects]]
-  from = "/articolo.html"
+  from = "/articoli/*"
   to = "/articolo.html"
   status = 200

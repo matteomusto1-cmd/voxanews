@@ -8,7 +8,6 @@
 // Viene eseguito automaticamente da Netlify a ogni pubblicazione.
 // ============================================================
 
-import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
 
@@ -16,7 +15,21 @@ const SUPABASE_URL = 'https://dvzoysgzpshztlcbijmj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2em95c2d6cHNoenRsY2Jpam1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNzM3OTEsImV4cCI6MjA5OTg0OTc5MX0.i9vQYsBWP-zyTqnhq3RQrtpd8k-38SgEbGr-4g5V53U';
 const SITE_URL = 'https://voxanews.net';
 
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Query diretta all'API REST: evita di installare dipendenze npm a ogni build
+async function fetchPublishedArticles() {
+  const now = new Date().toISOString();
+  const url = `${SUPABASE_URL}/rest/v1/articles?select=*&publish_at=lte.${now}&order=publish_at.desc`;
+  const res = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  });
+  if (!res.ok) {
+    return { data: null, error: `HTTP ${res.status}: ${await res.text()}` };
+  }
+  return { data: await res.json(), error: null };
+}
 
 const CATEGORY_LABELS = {
   politica: 'Politica',
@@ -158,11 +171,7 @@ async function build() {
   }
 
   // Scarica gli articoli già pubblicati (non quelli programmati nel futuro)
-  const { data: articles, error } = await sb
-    .from('articles')
-    .select('*')
-    .lte('publish_at', new Date().toISOString())
-    .order('publish_at', { ascending: false });
+  const { data: articles, error } = await fetchPublishedArticles();
 
   if (error) {
     console.error('Errore nel caricamento articoli:', error);
