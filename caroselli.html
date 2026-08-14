@@ -103,7 +103,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
-  const SIZE = 1080;
+  // Formato verticale 4:5 — nel profilo Instagram le anteprime vengono
+  // ritagliate in verticale, quindi il quadrato perdeva testo ai lati.
+  const W = 1080;
+  const H = 1350;
+  const MARGIN = 100;
+  // Zona sicura verticale: il profilo ritaglia in 3:4, quindi il contenuto
+  // importante resta lontano dai bordi alto/basso
+  const SAFE_TOP = 190;
+  const SAFE_BOTTOM = 190;
   const COLORS = {
     paper: '#F9FAFB',
     ink: '#111827',
@@ -263,102 +271,101 @@
     ctx.font = 'bold 34px "Playfair Display", Georgia, serif';
     ctx.fillStyle = color;
     ctx.textAlign = 'left';
-    ctx.fillText('VoxaNews', 90, 110);
+    ctx.fillText('VoxaNews', MARGIN, SAFE_TOP - 60);
   }
 
   function drawCover(ctx, category, title) {
     ctx.fillStyle = COLORS.ink;
-    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.fillRect(0, 0, W, H);
 
     drawLogo(ctx, COLORS.white);
 
     // Occhiello categoria
-    ctx.font = 'bold 26px Inter, sans-serif';
+    ctx.font = 'bold 28px Inter, sans-serif';
     ctx.fillStyle = '#C98A8A';
     ctx.textAlign = 'left';
-    ctx.fillText((category || '').toUpperCase(), 90, 380);
+    ctx.fillText((category || '').toUpperCase(), MARGIN, 470);
 
-    // Linea
     ctx.fillStyle = COLORS.accent;
-    ctx.fillRect(90, 410, 110, 5);
+    ctx.fillRect(MARGIN, 505, 120, 6);
 
     // Titolo
-    let fontSize = 74;
-    if (title.length > 90) fontSize = 58;
-    else if (title.length > 60) fontSize = 64;
+    let fontSize = 76;
+    if (title.length > 110) fontSize = 56;
+    else if (title.length > 80) fontSize = 62;
+    else if (title.length > 55) fontSize = 68;
 
     ctx.font = `bold ${fontSize}px "Playfair Display", Georgia, serif`;
     ctx.fillStyle = COLORS.white;
-    const lines = wrapText(ctx, title, SIZE - 180);
-    let y = 500;
-    for (const line of lines.slice(0, 7)) {
-      ctx.fillText(line, 90, y);
-      y += fontSize * 1.22;
+    const lines = wrapText(ctx, title, W - MARGIN * 2);
+    let y = 610;
+    for (const line of lines.slice(0, 8)) {
+      ctx.fillText(line, MARGIN, y);
+      y += fontSize * 1.2;
     }
 
     // Indicazione swipe
-    ctx.font = '500 26px Inter, sans-serif';
+    ctx.font = '500 28px Inter, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.fillText('Scorri →', 90, SIZE - 90);
+    ctx.fillText('Scorri \u2192', MARGIN, H - SAFE_BOTTOM);
   }
 
   function drawContent(ctx, text, index, total) {
     ctx.fillStyle = COLORS.paper;
-    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.fillRect(0, 0, W, H);
 
     drawLogo(ctx, COLORS.ink);
 
-    // Numero slide
-    ctx.font = 'bold 24px Inter, sans-serif';
+    ctx.font = 'bold 26px Inter, sans-serif';
     ctx.fillStyle = COLORS.accent;
     ctx.textAlign = 'right';
-    ctx.fillText(`${index}/${total}`, SIZE - 90, 110);
+    ctx.fillText(`${index}/${total}`, W - MARGIN, SAFE_TOP - 60);
     ctx.textAlign = 'left';
 
-    // Linea
     ctx.fillStyle = COLORS.hairline;
-    ctx.fillRect(90, 150, SIZE - 180, 2);
+    ctx.fillRect(MARGIN, SAFE_TOP - 20, W - MARGIN * 2, 2);
 
     // Testo (supporta **grassetto**)
     const plainText = text.replace(/\*\*/g, '');
-    let fontSize = 52;
-    if (plainText.length > 340) fontSize = 36;
-    else if (plainText.length > 220) fontSize = 42;
-    else if (plainText.length > 140) fontSize = 46;
+    let fontSize = 54;
+    if (plainText.length > 400) fontSize = 38;
+    else if (plainText.length > 280) fontSize = 44;
+    else if (plainText.length > 180) fontSize = 48;
 
     ctx.fillStyle = COLORS.ink;
     const fontFamily = 'Inter, sans-serif';
-    const lines = wrapRichText(ctx, text, SIZE - 180, fontSize, fontFamily);
+    const lines = wrapRichText(ctx, text, W - MARGIN * 2, fontSize, fontFamily);
     const lineHeight = fontSize * 1.5;
-    let y = (SIZE - lines.length * lineHeight) / 2 + fontSize;
-    for (const line of lines.slice(0, 12)) {
-      drawRichLine(ctx, line, 90, y, fontSize, fontFamily);
+    const blockHeight = lines.length * lineHeight;
+    let y = (H - blockHeight) / 2 + fontSize;
+    if (y < SAFE_TOP + 60) y = SAFE_TOP + 60;
+    for (const line of lines.slice(0, 14)) {
+      drawRichLine(ctx, line, MARGIN, y, fontSize, fontFamily);
       y += lineHeight;
     }
   }
 
   function drawClosing(ctx, text) {
     ctx.fillStyle = COLORS.accent;
-    ctx.fillRect(0, 0, SIZE, SIZE);
+    ctx.fillRect(0, 0, W, H);
 
     drawLogo(ctx, COLORS.white);
 
-    ctx.font = 'bold 62px "Playfair Display", Georgia, serif';
+    ctx.font = 'bold 64px "Playfair Display", Georgia, serif';
     ctx.fillStyle = COLORS.white;
-    const lines = wrapText(ctx, text, SIZE - 180);
-    let y = 440;
+    const lines = wrapText(ctx, text, W - MARGIN * 2);
+    let y = 560;
     for (const line of lines.slice(0, 5)) {
-      ctx.fillText(line, 90, y);
-      y += 82;
+      ctx.fillText(line, MARGIN, y);
+      y += 86;
     }
 
-    // Riquadro link in bio
     ctx.strokeStyle = 'rgba(255,255,255,0.6)';
     ctx.lineWidth = 3;
-    ctx.strokeRect(90, y + 50, 480, 96);
-    ctx.font = '600 34px Inter, sans-serif';
+    ctx.strokeRect(MARGIN, y + 60, 500, 100);
+    ctx.font = '600 36px Inter, sans-serif';
     ctx.fillStyle = COLORS.white;
-    ctx.fillText('Link in bio', 130, y + 112);
+    ctx.fillText('Link in bio', MARGIN + 42, y + 125);
   }
 
   function getSlideData() {
@@ -372,8 +379,8 @@
   }
 
   function renderSlideToCanvas(canvas, type, payload, index, total) {
-    canvas.width = SIZE;
-    canvas.height = SIZE;
+    canvas.width = W;
+    canvas.height = H;
     const ctx = canvas.getContext('2d');
     if (type === 'cover') drawCover(ctx, payload.category, payload.title);
     else if (type === 'content') drawContent(ctx, payload.text, index, total);
