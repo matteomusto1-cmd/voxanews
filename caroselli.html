@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generatore caroselli — VoxaNews</title>
+<meta name="robots" content="noindex, nofollow">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="assets/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="antialiased">
+
+<header class="border-b border-hairline bg-paper">
+  <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+    <a href="index.html" class="font-serif text-2xl font-bold text-ink">VoxaNews <span class="text-sm font-sans font-normal text-ink/40">/ caroselli</span></a>
+    <a href="admin.html" class="text-sm font-medium text-ink/70 hover:text-accent transition-colors duration-300">← Torna alla redazione</a>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-12">
+
+  <!-- Accesso negato -->
+  <section id="denied-section" class="hidden text-center py-20">
+    <h1 class="font-serif text-2xl font-bold text-ink mb-4">Accesso riservato</h1>
+    <p class="text-sm text-ink/60 mb-6">Questa area è riservata alla redazione di VoxaNews.</p>
+    <a href="admin.html" class="inline-block bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">Vai al login</a>
+  </section>
+
+  <!-- Editor -->
+  <section id="editor-section" class="hidden">
+    <h1 class="font-serif text-3xl font-bold text-ink mb-2">Generatore caroselli Instagram</h1>
+    <p class="text-sm text-ink/60 mb-10">Scegli un articolo, scrivi i punti chiave slide per slide, poi scarica le immagini pronte da caricare.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- COLONNA SINISTRA: form -->
+      <div>
+        <div class="mb-8">
+          <label class="block text-xs font-semibold uppercase tracking-widest text-ink/50 mb-2">Articolo</label>
+          <select id="article-select" class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent">
+            <option value="">Caricamento articoli…</option>
+          </select>
+        </div>
+
+        <!-- Slide 1: copertina -->
+        <div class="border border-hairline rounded-sm p-5 mb-4">
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-accent mb-3">Slide 1 — Copertina</p>
+          <label class="block text-xs font-medium text-ink/50 mb-1">Categoria (occhiello)</label>
+          <input id="cover-category" type="text" class="w-full border border-hairline bg-white px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-accent mb-3">
+          <label class="block text-xs font-medium text-ink/50 mb-1">Titolo</label>
+          <textarea id="cover-title" rows="3" class="w-full border border-hairline bg-white px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-accent"></textarea>
+        </div>
+
+        <!-- Slide di contenuto -->
+        <div id="content-slides"></div>
+
+        <button id="add-slide-btn" class="text-sm font-medium text-accent hover:text-ink transition-colors duration-300 mb-8">+ Aggiungi slide</button>
+
+        <!-- Slide finale -->
+        <div class="border border-hairline rounded-sm p-5 mb-8">
+          <p class="text-[11px] font-semibold uppercase tracking-widest text-accent mb-3">Slide finale — Rimando al sito</p>
+          <label class="block text-xs font-medium text-ink/50 mb-1">Testo di chiusura</label>
+          <textarea id="closing-text" rows="2" class="w-full border border-hairline bg-white px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-accent">Leggi l'articolo completo su voxanews.net</textarea>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mb-10">
+          <button id="download-btn" class="bg-ink text-white text-sm font-semibold px-6 py-3 rounded-sm hover:bg-accent transition-colors duration-300">
+            Scarica tutte le slide
+          </button>
+          <button id="refresh-preview-btn" class="border border-ink text-ink text-sm font-semibold px-6 py-3 rounded-sm hover:bg-ink hover:text-white transition-colors duration-300">
+            Aggiorna anteprima
+          </button>
+        </div>
+
+        <!-- Didascalia -->
+        <div class="border-t border-hairline pt-8">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-serif text-lg font-bold text-ink">Didascalia pronta</h2>
+            <button id="copy-caption-btn" class="text-sm font-medium text-accent hover:text-ink transition-colors duration-300">Copia</button>
+          </div>
+          <textarea id="caption-text" rows="8" class="w-full border border-hairline bg-white px-4 py-3 text-sm rounded-sm focus:outline-none focus:border-accent"></textarea>
+        </div>
+      </div>
+
+      <!-- COLONNA DESTRA: anteprima -->
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest text-ink/50 mb-4">Anteprima</p>
+        <div id="preview-container" class="grid grid-cols-2 gap-4"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script>
+  const SIZE = 1080;
+  const COLORS = {
+    paper: '#F9FAFB',
+    ink: '#111827',
+    accent: '#7A2E2E',
+    hairline: '#E5E7EB',
+    white: '#FFFFFF',
+  };
+
+  const HASHTAGS = {
+    politica: '#politica #attualità #italia #news',
+    economia: '#economia #finanza #mercati #news',
+    tecnologia: '#tecnologia #innovazione #tech #news',
+    cultura: '#cultura #arte #libri #news',
+    sport: '#sport #calcio #atletica #news',
+    opinioni: '#opinioni #editoriale #riflessioni',
+  };
+
+  const CATEGORY_LABELS = {
+    politica: 'Politica', economia: 'Economia', tecnologia: 'Tecnologia',
+    cultura: 'Cultura', sport: 'Sport', opinioni: 'Opinioni',
+  };
+
+  let articles = [];
+  let slideCount = 0;
+
+  // ---------- Accesso ----------
+  async function checkAccess() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      document.getElementById('denied-section').classList.remove('hidden');
+      return false;
+    }
+    const { data: adminRow } = await sb.from('admins').select('user_id').eq('user_id', session.user.id).maybeSingle();
+    if (!adminRow) {
+      document.getElementById('denied-section').classList.remove('hidden');
+      return false;
+    }
+    document.getElementById('editor-section').classList.remove('hidden');
+    return true;
+  }
+
+  // ---------- Caricamento articoli ----------
+  async function loadArticles() {
+    const { data, error } = await sb.from('articles').select('*').order('publish_at', { ascending: false }).limit(50);
+    if (error) return;
+    articles = data || [];
+    const select = document.getElementById('article-select');
+    select.innerHTML = '<option value="">— Scegli un articolo —</option>' +
+      articles.map(a => `<option value="${a.id}">${a.title}</option>`).join('');
+  }
+
+  // ---------- Slide dinamiche ----------
+  function addContentSlide(text = '') {
+    slideCount++;
+    const div = document.createElement('div');
+    div.className = 'border border-hairline rounded-sm p-5 mb-4 content-slide';
+    div.innerHTML = `
+      <div class="flex items-center justify-between mb-3">
+        <p class="text-[11px] font-semibold uppercase tracking-widest text-accent">Slide di contenuto</p>
+        <button type="button" class="remove-slide-btn text-xs text-accent/70 hover:text-accent">Rimuovi</button>
+      </div>
+      <textarea rows="4" class="slide-text w-full border border-hairline bg-white px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-accent" placeholder="Scrivi qui il punto chiave di questa slide...">${text}</textarea>
+    `;
+    document.getElementById('content-slides').appendChild(div);
+    div.querySelector('.remove-slide-btn').addEventListener('click', () => {
+      div.remove();
+      renderPreview();
+    });
+    div.querySelector('.slide-text').addEventListener('input', debounce(renderPreview, 500));
+  }
+
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  // ---------- Disegno slide su canvas ----------
+  function wrapText(ctx, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let line = '';
+    for (const word of words) {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function drawLogo(ctx, color) {
+    ctx.font = 'bold 34px "Playfair Display", Georgia, serif';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.fillText('VoxaNews', 90, 110);
+  }
+
+  function drawCover(ctx, category, title) {
+    ctx.fillStyle = COLORS.ink;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    drawLogo(ctx, COLORS.white);
+
+    // Occhiello categoria
+    ctx.font = 'bold 26px Inter, sans-serif';
+    ctx.fillStyle = '#C98A8A';
+    ctx.textAlign = 'left';
+    ctx.fillText((category || '').toUpperCase(), 90, 380);
+
+    // Linea
+    ctx.fillStyle = COLORS.accent;
+    ctx.fillRect(90, 410, 110, 5);
+
+    // Titolo
+    let fontSize = 74;
+    if (title.length > 90) fontSize = 58;
+    else if (title.length > 60) fontSize = 64;
+
+    ctx.font = `bold ${fontSize}px "Playfair Display", Georgia, serif`;
+    ctx.fillStyle = COLORS.white;
+    const lines = wrapText(ctx, title, SIZE - 180);
+    let y = 500;
+    for (const line of lines.slice(0, 7)) {
+      ctx.fillText(line, 90, y);
+      y += fontSize * 1.22;
+    }
+
+    // Indicazione swipe
+    ctx.font = '500 26px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('Scorri →', 90, SIZE - 90);
+  }
+
+  function drawContent(ctx, text, index, total) {
+    ctx.fillStyle = COLORS.paper;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    drawLogo(ctx, COLORS.ink);
+
+    // Numero slide
+    ctx.font = 'bold 24px Inter, sans-serif';
+    ctx.fillStyle = COLORS.accent;
+    ctx.textAlign = 'right';
+    ctx.fillText(`${index}/${total}`, SIZE - 90, 110);
+    ctx.textAlign = 'left';
+
+    // Linea
+    ctx.fillStyle = COLORS.hairline;
+    ctx.fillRect(90, 150, SIZE - 180, 2);
+
+    // Testo
+    let fontSize = 52;
+    if (text.length > 340) fontSize = 36;
+    else if (text.length > 220) fontSize = 42;
+    else if (text.length > 140) fontSize = 46;
+
+    ctx.font = `400 ${fontSize}px Inter, sans-serif`;
+    ctx.fillStyle = COLORS.ink;
+    const lines = wrapText(ctx, text, SIZE - 180);
+    const lineHeight = fontSize * 1.5;
+    let y = (SIZE - lines.length * lineHeight) / 2 + fontSize;
+    for (const line of lines.slice(0, 12)) {
+      ctx.fillText(line, 90, y);
+      y += lineHeight;
+    }
+  }
+
+  function drawClosing(ctx, text) {
+    ctx.fillStyle = COLORS.accent;
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    drawLogo(ctx, COLORS.white);
+
+    ctx.font = 'bold 62px "Playfair Display", Georgia, serif';
+    ctx.fillStyle = COLORS.white;
+    const lines = wrapText(ctx, text, SIZE - 180);
+    let y = 440;
+    for (const line of lines.slice(0, 5)) {
+      ctx.fillText(line, 90, y);
+      y += 82;
+    }
+
+    // Riquadro link in bio
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(90, y + 50, 480, 96);
+    ctx.font = '600 34px Inter, sans-serif';
+    ctx.fillStyle = COLORS.white;
+    ctx.fillText('Link in bio', 130, y + 112);
+  }
+
+  function getSlideData() {
+    const category = document.getElementById('cover-category').value.trim();
+    const title = document.getElementById('cover-title').value.trim();
+    const contents = Array.from(document.querySelectorAll('.slide-text'))
+      .map(t => t.value.trim())
+      .filter(Boolean);
+    const closing = document.getElementById('closing-text').value.trim();
+    return { category, title, contents, closing };
+  }
+
+  function renderSlideToCanvas(canvas, type, payload, index, total) {
+    canvas.width = SIZE;
+    canvas.height = SIZE;
+    const ctx = canvas.getContext('2d');
+    if (type === 'cover') drawCover(ctx, payload.category, payload.title);
+    else if (type === 'content') drawContent(ctx, payload.text, index, total);
+    else drawClosing(ctx, payload.text);
+  }
+
+  async function renderPreview() {
+    await document.fonts.ready;
+    const { category, title, contents, closing } = getSlideData();
+    const container = document.getElementById('preview-container');
+    container.innerHTML = '';
+
+    const total = contents.length;
+    const slides = [
+      { type: 'cover', payload: { category, title } },
+      ...contents.map((text, i) => ({ type: 'content', payload: { text }, index: i + 1 })),
+      { type: 'closing', payload: { text: closing } },
+    ];
+
+    slides.forEach((slide, i) => {
+      const canvas = document.createElement('canvas');
+      canvas.className = 'w-full border border-hairline rounded-sm';
+      renderSlideToCanvas(canvas, slide.type, slide.payload, slide.index, total);
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `<p class="text-[11px] text-ink/40 mb-1">Slide ${i + 1}</p>`;
+      wrapper.appendChild(canvas);
+      container.appendChild(wrapper);
+    });
+  }
+
+  async function downloadAll() {
+    await document.fonts.ready;
+    const { category, title, contents, closing } = getSlideData();
+    const total = contents.length;
+    const slides = [
+      { type: 'cover', payload: { category, title } },
+      ...contents.map((text, i) => ({ type: 'content', payload: { text }, index: i + 1 })),
+      { type: 'closing', payload: { text: closing } },
+    ];
+
+    for (let i = 0; i < slides.length; i++) {
+      const canvas = document.createElement('canvas');
+      renderSlideToCanvas(canvas, slides[i].type, slides[i].payload, slides[i].index, total);
+      const link = document.createElement('a');
+      link.download = `voxanews-slide-${String(i + 1).padStart(2, '0')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      await new Promise(r => setTimeout(r, 350));
+    }
+  }
+
+  function buildCaption(article) {
+    if (!article) return '';
+    const tags = HASHTAGS[article.category] || '#news';
+    return `${article.title}\n\n${article.excerpt || ''}\n\n📎 Leggi l'articolo completo — link in bio\n\n${tags} #voxanews #informazione`;
+  }
+
+  // ---------- Eventi ----------
+  document.getElementById('article-select').addEventListener('change', (e) => {
+    const article = articles.find(a => a.id === e.target.value);
+    if (!article) return;
+    document.getElementById('cover-category').value = CATEGORY_LABELS[article.category] || article.category;
+    document.getElementById('cover-title').value = article.title;
+    document.getElementById('caption-text').value = buildCaption(article);
+    renderPreview();
+  });
+
+  document.getElementById('add-slide-btn').addEventListener('click', () => addContentSlide());
+  document.getElementById('download-btn').addEventListener('click', downloadAll);
+  document.getElementById('refresh-preview-btn').addEventListener('click', renderPreview);
+
+  document.getElementById('cover-title').addEventListener('input', debounce(renderPreview, 500));
+  document.getElementById('cover-category').addEventListener('input', debounce(renderPreview, 500));
+  document.getElementById('closing-text').addEventListener('input', debounce(renderPreview, 500));
+
+  document.getElementById('copy-caption-btn').addEventListener('click', () => {
+    const ta = document.getElementById('caption-text');
+    ta.select();
+    document.execCommand('copy');
+    const btn = document.getElementById('copy-caption-btn');
+    const original = btn.textContent;
+    btn.textContent = 'Copiato ✓';
+    setTimeout(() => { btn.textContent = original; }, 1800);
+  });
+
+  // ---------- Avvio ----------
+  (async () => {
+    const ok = await checkAccess();
+    if (!ok) return;
+    await loadArticles();
+    addContentSlide();
+    addContentSlide();
+    addContentSlide();
+    renderPreview();
+  })();
+</script>
+
+</body>
+</html>
